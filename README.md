@@ -32,4 +32,4 @@ As a registered sole trader, I provide end-to-end professional support for comme
 *Open to industry grants (e.g., Epic MegaGrants), community funding, and B2B partnerships.*
 
 ---
-© 2026 [Your Name and Surname]. Distributed under the MIT License.
+© 2026 Patryk Korczak. Distributed under the MIT License.
