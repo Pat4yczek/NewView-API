@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body { background: #111; color: #0f0; font-family: monospace; text-align: center; overflow: hidden; touch-action: none; }
+        #pad { width: 80vw; height: 80vw; background: #222; border: 2px solid #0f0; margin: 20px auto; border-radius: 20px; display: flex; align-items: center; justify-content: center; transition: 0.1s; }
+        #info { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h3>NEWVIEW INPUT DEMO</h3>
+    <div id="pad">DOCIŚNIJ</div>
+    <div id="info">Status: Rozłączono</div>
+
+    <script>
+        let socket;
+        let maxR = 1;
+        const pad = document.getElementById('pad');
+        const info = document.getElementById('info');
+
+        // Automatyczne łączenie z serwerem (zakładamy to samo IP co strona)
+        const serverIP = window.location.hostname;
+        socket = new WebSocket(`ws://${serverIP}:8765`);
+
+        socket.onopen = () => info.innerText = "Status: POŁĄCZONO";
+
+        pad.addEventListener('pointerdown', (e) => {
+            pad.style.borderColor = '#fff';
+            send(e);
+        });
+
+        pad.addEventListener('pointermove', (e) => {
+            if (e.buttons > 0) send(e);
+        });
+
+        pad.addEventListener('pointerup', () => {
+            pad.style.borderColor = '#0f0';
+            pad.style.transform = "scale(1)";
+        });
+
+        function send(e) {
+            const r = e.radiusX || 1;
+            if (r > maxR) maxR = r;
+            const aftertouch = Math.min(r / maxR, 1.0);
+            const velocity = e.pressure || 0.5;
+
+            // Efekt wizualny
+            pad.style.transform = `scale(${0.9 + (aftertouch * 0.1)})`;
+            pad.style.boxShadow = `0 0 ${aftertouch * 50}px #0f0`;
+
+            if (socket.readyState === 1) {
+                socket.send(json = JSON.stringify({
+                    type: 'DATA',
+                    v: velocity,
+                    a: aftertouch,
+                    r: r
+                }));
+            }
+        }
+    </script>
+</body>
+</html>
