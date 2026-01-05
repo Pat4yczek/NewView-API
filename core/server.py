@@ -29,7 +29,7 @@ async def main():
     ip = get_local_ip()
     port = 8765
     # Link do Twojego hostingu (może to być localhost jeśli testujesz na tym samym kompie)
-    link = f"http://{ip}:8080" 
+    link = f"http://{ip}:8080/pwa/index.html" 
     
     print("-" * 30)
     print(f"NEWVIEW API SERVER")
