@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+    meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
     <style>
-        body { background: #111; color: #0f0; font-family: monospace; text-align: center; overflow: hidden; touch-action: none; }
-        #pad { width: 80vw; height: 80vw; background: #222; border: 2px solid #0f0; margin: 20px auto; border-radius: 20px; display: flex; align-items: center; justify-content: center; transition: 0.1s; }
-        #info { font-size: 12px; }
+        body {
+            background: #111;
+            color: #0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            touch-action: none; /* Kluczowe: wyłącza zoom i scroll */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        /* Reszta Twoich stylów */
     </style>
     <link rel="manifest" href="manifest.json">
 </head>
