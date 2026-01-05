@@ -24,7 +24,7 @@
     <h3>NEWVIEW INPUT DEMO</h3>
     <div id="pad">DOCIŚNIJ</div>
     <div id="info">Status: Rozłączono</div>
-
+    <button onclick="goFull()" style="position:fixed; top:10px; right:10px; z-index:100;">FULL</button>
     <script>
         let socket;
         let maxR = 1;
@@ -69,6 +69,11 @@
                     r: r
                 }));
             }
+        }
+        function goFull() {
+            let el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); // Safari
         }
     </script>
 </body>
