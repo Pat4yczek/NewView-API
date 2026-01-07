@@ -1,16 +1,20 @@
 {
-  "short_name": "NewView",
-  "name": "NewView API Controller",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/564/564414.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
+  "name": "General PWA Template",
+  "short_name": "CoreApp",
   "start_url": ".",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#111111",
-  "theme_color": "#00ff00"
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
