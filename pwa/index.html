@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
     <style>
@@ -12,19 +13,45 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            touch-action: none; /* Kluczowe: wyłącza zoom i scroll */
+            touch-action: none;
+            /* Kluczowe: wyłącza zoom i scroll */
             -webkit-user-select: none;
             user-select: none;
         }
+
+        #pad {
+            width: 85vw;
+            height: 60vh;
+            background: radial-gradient(circle, #222 0%, #111 100%);
+            border: 4px solid #0f0;
+            margin: 20px auto;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, box-shadow 0.1s;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            font-size: 20px;
+            font-weight: bold;
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+        }
+
         /* Reszta Twoich stylów */
     </style>
     <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
     <h3>NEWVIEW INPUT DEMO</h3>
     <div id="pad">DOCIŚNIJ</div>
     <div id="info">Status: Rozłączono</div>
-    <button onclick="goFull()" style="position:fixed; top:10px; right:10px; z-index:100;">FULL</button>
+    <button onclick="goFull()" class="full-btn">TRYB PEŁNY EKRAN</button>
+    <div style="width: 80vw; margin: 10px auto;">
+        <div id="v-bar" style="height: 5px; background: blue; width: 0%; margin-bottom: 5px;"></div>
+        <div id="a-bar" style="height: 5px; background: green; width: 0%;"></div>
+    </div>
     <script>
         let socket;
         let maxR = 1;
@@ -51,22 +78,48 @@
             pad.style.transform = "scale(1)";
         });
 
-        function send(e) {
-            const r = e.radiusX || 1;
-            if (r > maxR) maxR = r;
-            const aftertouch = Math.min(r / maxR, 1.0);
-            const velocity = e.pressure || 0.5;
+        let currentVelocity = 0;
 
-            // Efekt wizualny
-            pad.style.transform = `scale(${0.9 + (aftertouch * 0.1)})`;
-            pad.style.boxShadow = `0 0 ${aftertouch * 50}px #0f0`;
+        pad.addEventListener('pointerdown', (e) => {
+            // Velocity jest obliczane tylko raz - w momencie uderzenia
+            currentVelocity = e.pressure || 0.5;
+            pad.style.borderColor = '#fff';
+            send(e, true); // true oznacza, że to uderzenie (Trigger)
+        });
+
+        let startY = 0;
+
+        pad.addEventListener('pointerdown', (e) => {
+            startY = e.clientY; // Zapamiętujemy punkt startowy
+        });
+
+        function send(e) {
+            // ZMIANA: e.clientY - startY (zamiast startY - e.clientY)
+            // Teraz przesunięcie palca w dół od punktu startu zwiększa wartość
+            const diffY = e.clientY - startY;
+
+            const range = 200; // Czułość: ile pikseli przesunąć dla 100%
+
+            let aftertouch = diffY / range;
+
+            // Zabezpieczenie zakresu 0.0 - 1.0
+            aftertouch = Math.max(0, Math.min(1, aftertouch));
+
+            // Wizualizacja
+            pad.innerText = `GAZ: ${Math.round(aftertouch * 100)}%`;
+
+            // Dynamiczna zmiana koloru (czerwony przy max gazie)
+            const red = Math.round(aftertouch * 255);
+            const green = Math.round((1 - aftertouch) * 255);
+            pad.style.borderColor = `rgb(${red}, ${green}, 0)`;
+            pad.style.boxShadow = `0 0 ${20 + (aftertouch * 40)}px rgb(${red}, ${green}, 0)`;
 
             if (socket.readyState === 1) {
-                socket.send(json = JSON.stringify({
+                socket.send(JSON.stringify({
                     type: 'DATA',
-                    v: velocity,
+                    v: 0.5,
                     a: aftertouch,
-                    r: r
+                    r: 0
                 }));
             }
         }
@@ -77,4 +130,5 @@
         }
     </script>
 </body>
+
 </html>
